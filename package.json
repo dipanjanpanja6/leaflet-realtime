@@ -39,5 +39,7 @@
     "tape": "^4.10.1",
     "tape-run": "^7.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-leaflet-drift-marker": "^3.0.0"
+  }
 }
