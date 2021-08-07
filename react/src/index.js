@@ -6,51 +6,48 @@ import ReactLeafletDriftMarker from "react-leaflet-drift-marker"
 
 import "./styles.css"
 var myicon = L.icon({
-  iconUrl: "https://i.stack.imgur.com/oQJuO.png",
+    iconUrl: "https://i.stack.imgur.com/oQJuO.png",
 
-  //       shadowUrl: "//leafletjs.com/docs/images/leaf-shadow.png",
-  iconSize: [38, 40], // size of the icon
-  //       shadowSize: [50, 64], // size of the shadow
-  //       iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-  //       shadowAnchor: [4, 62], // the same for the shadow
-  //       popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
-})
-var index = -1
+    //       shadowUrl: "//leafletjs.com/docs/images/leaf-shadow.png",
+    iconSize: [38, 40], // size of the icon
+    //       shadowSize: [50, 64], // size of the shadow
+    //       iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+    //       shadowAnchor: [4, 62], // the same for the shadow
+    //       popupAnchor: [-3, -76], // point from which the popup should open relative to the iconAnchor
+  }),
+  parkingCar = L.icon({ iconUrl: "./greyCar.png", iconSize: [21, 40] }),
+  availableCar = L.icon({ iconUrl: "./greenCar.png", iconSize: [21, 40] }),
+  index = -1,
+  ladybirdLakeIndex = -1,
+  highroadIndex = -1
 const timeout = 2000
 
 const getPoints = () => {
-  const austin = [
-    [30.267389164727902, -97.74306115211053],
-    [30.26783414344702, -97.74546441976558],
-    [30.263979436043968, -97.74718136603266],
-    [30.26631479083578, -97.75503467063878],
-    [30.267037557237032, -97.75713751870407],
-    [30.268353335151964, -97.75921894949883],
-    [30.26955786395252, -97.76192273176184],
-    [30.274227963475166, -97.76632142338225],
-    [30.276766742610125, -97.76866046776505],
-    [30.278286340453224, -97.76883221621019],
-    [30.279305354702355, -97.76851014022131],
-    [30.28156613919962, -97.76670772907723],
-    [30.292275744723106, -97.76016306944803],
-    [30.296259181181806, -97.7590258488071],
-    [30.30176164965226, -97.75851091754285],
-    [30.30370680145161, -97.7586180031435],
-    [30.336399250544652, -97.75554978972683],
-    [30.34862132189497, -97.74990630426936],
-    [30.35212111983397, -97.74898378957224],
-    [30.35589872811352, -97.74653761560661],
-    [30.384075477506816, -97.73591589313489],
-    [30.395847500119658, -97.73293327864339],
-    [30.391868112673887, -97.72475792146712],
-    [30.390276244196983, -97.71758034571717],
-    [30.3905724770646, -97.71412561854928],
-    [30.382742688433627, -97.69798948383317],
-    [30.38259458244905, -97.69405201132935],
-    [30.379605062599722, -97.68771126095854],
-    [30.363052249563854, -97.69697331251709],
-    [30.35081109480297, -97.67624051191449],
-    [30.34496513064351, -97.67774055126263],
+  const ladybirdLake = [
+    [30.24788317794715, -97.72405794590846],
+    [30.247992078270297, -97.72399625466734],
+    [30.2484948742885, -97.72378436066589],
+    [30.248494875358098, -97.72370657647703],
+    [30.2484948742885, -97.72378436066589],
+    [30.24863621275131, -97.72372803321156],
+    [30.249092665054217, -97.72354296069632],
+    [30.249646427921935, -97.72367170721915],
+    [30.250297502346925, -97.72325596430944],
+    [30.249699716861407, -97.72154739894312],
+  ]
+  const highroad = [
+    [30.246136711149454, -97.73460499706769],
+    [30.247177736795607, -97.73474678799832],
+    [30.247615145669897, -97.73455438555624],
+    [30.247440188788058, -97.73370373036116],
+    [30.246565375674276, -97.73251889946454],
+    [30.24562931505179, -97.73132396323885],
+    [30.24477197739979, -97.73026068852482],
+    [30.2448507579338, -97.72680745034108],
+    [30.244807014351988, -97.72548088444962],
+    [30.24473688852949, -97.72339481748863],
+    [30.24430829287298, -97.72211880257291],
+    [30.242129993520457, -97.72329355408458],
   ]
   const austin2 = [
     [30.248380201531102, -97.7278183741435],
@@ -81,26 +78,31 @@ const getPoints = () => {
 
   if (austin2.length - 1 === index) index = -1
   index = index + 1
-  console.log(austin2.length, index)
-  return austin2[index]
+  if (ladybirdLake.length - 1 !== ladybirdLakeIndex) ladybirdLakeIndex = ladybirdLakeIndex + 1
+  if (highroad.length - 1 !== highroadIndex) highroadIndex = highroadIndex + 1
+
+  return { loop1: austin2[index], loop2: ladybirdLake[ladybirdLakeIndex], loop3: highroad[highroadIndex] }
 }
 const App = () => {
-  const [state, setState] = useState({ latlng: [30.248380201531102, -97.7278183741435] })
+  const [state, setState] = useState({ loop1: [30.248380201531102, -97.7278183741435], loop2: [30.24788317794715, -97.72405794590846], loop3: [30.244177127292467, -97.7347366140566] })
 
   useEffect(() => {
     console.log("call")
     const timer = setInterval(() => {
-      console.log("call_t")
-      setState({ latlng: getPoints() })
+      const { loop1, loop2, loop3 } = getPoints()
+      setState({ loop1, loop2, loop3 })
     }, timeout)
     return () => clearInterval(timer)
   }, [])
 
   return (
     <div>
-      <Map center={[30.248380201531102, -97.7278183741435]} zoom={17}>
+      <Map center={[30.42452127431796, -97.66210189454922]} zoom={17}>
         <TileLayer attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' url="https://{s}.tile.osm.org/{z}/{x}/{y}.png" />
-        <ReactLeafletDriftMarker position={state.latlng} duration={timeout} keepAtCenter={true} icon={myicon}>
+        {/* <ReactLeafletDriftMarker
+          position={state.loop1}
+          duration={timeout} //keepAtCenter={true}
+          icon={myicon}>
           <Popup>
             Hello, This is to know the details about the car :). <br /> Name - Yellow car. <br /> Phone - 781-835-5258
             <br />
@@ -109,13 +111,22 @@ const App = () => {
           </Popup>
           <Tooltip>Carl L. West</Tooltip>
         </ReactLeafletDriftMarker>
-        {/* <Marker position={state.latlng} icon={myicon}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker> */}
+  */}
+        
+        <Marker position={[30.341442112227067, -97.61458396007917]} icon={parkingCar}>
+          <Popup>Parking Car.</Popup>
+          <Tooltip>Parking Car.</Tooltip>
+        </Marker>
+        <Marker position={[30.339636557667372, -97.61432323124303]} icon={parkingCar}>
+          <Popup>Parking Car.</Popup>
+          <Tooltip>Parking Car.</Tooltip>
+        </Marker>
+        <Marker position={[30.42452127431796, -97.66210189454922]} icon={parkingCar}>
+          <Popup>Parking Car.</Popup>
+          <Tooltip>Parking Car.</Tooltip>
+        </Marker>
       </Map>
-    </div>
+    </div> 
   )
 }
 
